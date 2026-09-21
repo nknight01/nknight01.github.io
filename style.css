@@ -120,6 +120,7 @@ footer {
     }
 
     nav ul {
-        gap: 12px;
+        flex-direction: column;
+        gap: 10px;
     }
 }
