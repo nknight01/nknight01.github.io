@@ -143,3 +143,42 @@ for (const assignment of assignments) {
 console.log("Final project information:", studentProject);
 console.log("Total assignments:", assignments.length);
 console.log("JavaScript program completed successfully.");
+
+// 8. DOM Interaction
+const message = document.querySelector('#site-message');
+const highlightButton = document.querySelector('#highlight-button');
+const addButton = document.querySelector('#add-button');
+const nameInput = document.querySelector('#name-input');
+const namePreview = document.querySelector('#name-preview');
+const dynamicList = document.querySelector('#dynamic-list');
+
+highlightButton.addEventListener('click', () => {
+    message.textContent = 'JavaScript is now controlling this page!';
+    message.classList.toggle('highlighted');
+
+    highlightButton.textContent = message.classList.contains('highlighted')
+        ? 'Remove Highlight'
+        : 'Highlight Message';
+});
+
+nameInput.addEventListener('input', (event) => {
+    const name = event.target.value;
+
+    if (name.trim() === '') {
+        namePreview.textContent = 'Your name will appear here.';
+    } else {
+        namePreview.textContent = `Hello, ${name}!`;
+    }
+});
+
+addButton.addEventListener('click', () => {
+    const item = document.createElement('li');
+
+    item.textContent = 'New item added with JavaScript!';
+    item.classList.add('dynamic-item');
+
+    dynamicList.append(item);
+});
+
+const buttonAction = highlightButton.getAttribute('data-action');
+console.log(`Highlight button action: ${buttonAction}`);
