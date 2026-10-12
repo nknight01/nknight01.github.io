@@ -159,3 +159,107 @@ footer {
     margin: 0.5rem 0;
     padding: 0.5rem;
 }
+
+.study-form-section {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 25px;
+    background-color: #f4f6f9;
+    border: 2px solid #d7dce5;
+    border-radius: 12px;
+    color: #222;
+}
+
+.study-form-section h2 {
+    margin-top: 0;
+    color: #243b64;
+}
+
+.study-form-section .form-group {
+    margin-bottom: 18px;
+}
+
+.study-form-section label,
+.study-form-section legend {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: bold;
+}
+
+.study-form-section input:not([type="checkbox"]),
+.study-form-section select,
+.study-form-section textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #aab2c0;
+    border-radius: 6px;
+    font: inherit;
+}
+
+.study-form-section input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.study-form-section fieldset {
+    border: 1px solid #c5ccd8;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.study-form-section fieldset label {
+    display: inline;
+    font-weight: normal;
+}
+
+.study-form-section button {
+    margin: 5px 8px 5px 0;
+    padding: 11px 18px;
+    border: none;
+    border-radius: 6px;
+    background-color: #243b64;
+    color: white;
+    font: inherit;
+    cursor: pointer;
+}
+
+.study-form-section button:hover {
+    background-color: #36588f;
+}
+
+.study-form-section input:focus,
+.study-form-section select:focus,
+.study-form-section textarea:focus {
+    outline: 2px solid #36588f;
+    outline-offset: 2px;
+}
+
+.field-error {
+    margin: 5px 0 0;
+    color: #b00020;
+    font-size: 0.9rem;
+}
+
+#form-message {
+    font-weight: bold;
+}
+
+#form-message.success {
+    color: #176b35;
+}
+
+#form-message.error {
+    color: #b00020;
+}
+
+@media (max-width: 600px) {
+    .study-form-section {
+        margin: 20px 10px;
+        padding: 16px;
+    }
+
+    .study-form-section button {
+        width: 100%;
+        margin-right: 0;
+    }
+}

@@ -182,3 +182,190 @@ addButton.addEventListener('click', () => {
 
 const buttonAction = highlightButton.getAttribute('data-action');
 console.log(`Highlight button action: ${buttonAction}`);
+
+
+const studyForm = document.querySelector('#study-form');
+
+if (studyForm) {
+    const studentName = document.querySelector('#student-name');
+    const studentEmail = document.querySelector('#student-email');
+    const studyDate = document.querySelector('#study-date');
+    const studyHours = document.querySelector('#study-hours');
+    const studySubject = document.querySelector('#study-subject');
+    const studyGoals = document.querySelector('#study-goals');
+    const studyReminder = document.querySelector('#study-reminder');
+    const formMessage = document.querySelector('#form-message');
+
+    const errorFields = {
+        name: document.querySelector('#name-error'),
+        email: document.querySelector('#email-error'),
+        date: document.querySelector('#date-error'),
+        hours: document.querySelector('#hours-error'),
+        subject: document.querySelector('#subject-error'),
+        goals: document.querySelector('#goals-error')
+    };
+
+    function clearErrors() {
+        Object.values(errorFields).forEach((field) => {
+            field.textContent = '';
+        });
+
+        formMessage.textContent = '';
+        formMessage.classList.remove('error', 'success');
+    }
+
+    studyForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        clearErrors();
+
+        const name = studentName.value.trim();
+        const email = studentEmail.value.trim();
+        const date = studyDate.value;
+        const hours = Number(studyHours.value);
+        const subject = studySubject.value;
+        const goals = studyGoals.value.trim();
+        const reminder = studyReminder.checked;
+
+        let isValid = true;
+
+        // Rule 1: Name is required and must have at least 2 characters.
+        if (name.length < 2) {
+            errorFields.name.textContent =
+                'Enter your name using at least 2 characters.';
+            isValid = false;
+        }
+
+        // Rule 2: Email is required and must have a valid format.
+        if (email === '') {
+            errorFields.email.textContent = 'Email address is required.';
+            isValid = false;
+        } else if (!studentEmail.validity.valid) {
+            errorFields.email.textContent =
+                'Enter a valid email address, such as student@example.com.';
+            isValid = false;
+        }
+
+        // Rule 3: Study date is required and cannot be in the past.
+        const today = new Date();
+        const localToday = new Date(
+            today.getTime() - today.getTimezoneOffset() * 60000
+        ).toISOString().split('T')[0];
+
+        if (date === '') {
+            errorFields.date.textContent = 'Choose a study date.';
+            isValid = false;
+        } else if (date < localToday) {
+            errorFields.date.textContent =
+                'Choose today or a future date for your study session.';
+            isValid = false;
+        }
+
+        // Rule 4: Study duration must be a whole number from 1 to 4.
+        if (
+            studyHours.value.trim() === '' ||
+            !Number.isInteger(hours) ||
+            hours < 1 ||
+            hours > 4
+        ) {
+            errorFields.hours.textContent =
+                'Study duration must be a whole number from 1 to 4 hours.';
+            isValid = false;
+        }
+
+        // Rule 5: A subject must be selected.
+        if (subject === '') {
+            errorFields.subject.textContent =
+                'Please choose a subject for your study session.';
+            isValid = false;
+        }
+
+        // Optional goals must not exceed 300 characters.
+        if (goals.length > 300) {
+            errorFields.goals.textContent =
+                'Study goals must be 300 characters or fewer.';
+            isValid = false;
+        }
+
+        if (!isValid) {
+            formMessage.textContent =
+                'Please correct the errors above and try again.';
+            formMessage.classList.add('error');
+            return;
+        }
+
+        // Create a clean object ready for a future API.
+        const studyRequest = {
+            studentName: name,
+            email: email,
+            studyDate: date,
+            studyHours: hours,
+            subject: subject,
+            studyGoals: goals,
+            reminder: reminder
+        };
+
+        console.log('Study session request:', studyRequest);
+
+        formMessage.textContent =
+            'Success! Your study session request is ready. No data has been sent to a server.';
+        formMessage.classList.add('success');
+    });
+
+    // Clear or update field errors when users edit their answers.
+    studentName.addEventListener('input', () => {
+        errorFields.name.textContent =
+            studentName.value.trim().length >= 2
+                ? ''
+                : 'Enter at least 2 characters.';
+    });
+
+    studentEmail.addEventListener('input', () => {
+        errorFields.email.textContent =
+            studentEmail.value.trim() !== '' &&
+            studentEmail.validity.valid
+                ? ''
+                : 'Enter a valid email address.';
+    });
+
+    studyDate.addEventListener('change', () => {
+        const today = new Date();
+        const localToday = new Date(
+            today.getTime() - today.getTimezoneOffset() * 60000
+        ).toISOString().split('T')[0];
+
+        errorFields.date.textContent =
+            studyDate.value !== '' && studyDate.value >= localToday
+                ? ''
+                : 'Choose today or a future date.';
+    });
+
+    studyHours.addEventListener('input', () => {
+        const hours = Number(studyHours.value);
+
+        errorFields.hours.textContent =
+            studyHours.value.trim() !== '' &&
+            Number.isInteger(hours) &&
+            hours >= 1 &&
+            hours <= 4
+                ? ''
+                : 'Enter a whole number from 1 to 4.';
+    });
+
+    studySubject.addEventListener('change', () => {
+        errorFields.subject.textContent =
+            studySubject.value !== ''
+                ? ''
+                : 'Please choose a subject.';
+    });
+
+    studyGoals.addEventListener('input', () => {
+        errorFields.goals.textContent =
+            studyGoals.value.trim().length <= 300
+                ? ''
+                : 'Study goals must be 300 characters or fewer.';
+    });
+
+    studyForm.addEventListener('reset', () => {
+        setTimeout(clearErrors, 0);
+    });
+}
