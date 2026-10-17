@@ -369,3 +369,124 @@ if (studyForm) {
         setTimeout(clearErrors, 0);
     });
 }
+
+
+
+/* ==========================================
+   Homework 8: Asynchronous JavaScript and API
+   ========================================== */
+
+const apiStatus = document.querySelector('#api-status');
+const postsContainer = document.querySelector('#posts-container');
+const postForm = document.querySelector('#post-form');
+const postStatus = document.querySelector('#post-status');
+const createdPost = document.querySelector('#created-post');
+
+// GET: Retrieve five posts from JSONPlaceholder.
+async function loadPosts() {
+    apiStatus.textContent = 'Loading posts...';
+    postsContainer.textContent = '';
+
+    try {
+        const response = await fetch(
+            'https://jsonplaceholder.typicode.com/posts?_limit=5'
+        );
+
+        if (!response.ok) {
+            throw new Error(`Request failed: ${response.status}`);
+        }
+
+        const posts = await response.json();
+        renderPosts(posts);
+        apiStatus.textContent = `Successfully loaded ${posts.length} posts.`;
+    } catch (error) {
+        console.error('Error loading posts:', error);
+        apiStatus.textContent =
+            'Sorry, posts could not be loaded. Please try again later.';
+    }
+}
+
+// Render the returned posts into the page.
+function renderPosts(posts) {
+    postsContainer.textContent = '';
+
+    for (const post of posts) {
+        const article = document.createElement('article');
+        const title = document.createElement('h4');
+        const body = document.createElement('p');
+
+        title.textContent = post.title;
+        body.textContent = post.body;
+
+        article.append(title, body);
+        postsContainer.append(article);
+    }
+}
+
+// POST: Send a new post to JSONPlaceholder.
+async function createPost(title, body) {
+    const response = await fetch(
+        'https://jsonplaceholder.typicode.com/posts',
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: title,
+                body: body,
+                userId: 1
+            })
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error(`Request failed: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+// Handle the new-post form.
+if (postForm) {
+    postForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const title = document.querySelector('#post-title').value.trim();
+        const body = document.querySelector('#post-body').value.trim();
+
+        if (!title || !body) {
+            postStatus.textContent = 'Please complete both fields.';
+            return;
+        }
+
+        postStatus.textContent = 'Submitting your post...';
+        createdPost.textContent = '';
+
+        try {
+            const savedPost = await createPost(title, body);
+
+            postStatus.textContent = 'Post submitted successfully!';
+
+            const result = document.createElement('article');
+            const resultTitle = document.createElement('h4');
+            const resultBody = document.createElement('p');
+
+            resultTitle.textContent = savedPost.title;
+            resultBody.textContent =
+                `${savedPost.body} (Returned post ID: ${savedPost.id})`;
+
+            result.append(resultTitle, resultBody);
+            createdPost.append(result);
+
+            postForm.reset();
+        } catch (error) {
+            console.error('Error creating post:', error);
+            postStatus.textContent =
+                'Sorry, your post could not be submitted. Please try again.';
+        }
+    });
+}
+
+// Load the posts when the page opens.
+loadPosts();
